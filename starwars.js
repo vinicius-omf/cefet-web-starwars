@@ -16,21 +16,32 @@ function buscarFilmes() {
 }
 
 function atualizaLista(data) {
+
+	data.results.sort(function(a,b){ return a.episode_id - b.episode_id});
     for(let i=0; i< data.count; i++){
 
-    	let urlep = data.results[i].url;
+    	let urlep = '"'+data.results[i].url+'"';
+    	let fucao = "'buscarIntro("+ urlep +")'";
     	let epid = "Episode " + data.results[i].episode_id;
 
-    	conteudo = "<li onclick='buscarIntro(" + urlep+ ")'>" + epid + "</li>"
+    	conteudo = "<li onclick="+ fucao + ">" + epid + "</li>"
     	$("#movies ul").append(conteudo);
     }
 }
 
-function buscarIntro(data) {
-	alert(data);
+function buscarIntro(url) {
+	$.ajax({
+		url: url,
+		method: 'GET',
+		success: function(resposta){
+			atualizarIntro(resposta);
+	}});
+}
+
+function atualizarIntro(data){
+	$(".reading-animation").html(data.opening_crawl);
 }
 
 $(document).ready(
 	 buscarFilmes()
-
 );
